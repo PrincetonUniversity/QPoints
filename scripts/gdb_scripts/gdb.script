@@ -1,0 +1,6 @@
+target remote host.docker.internal:1234
+set logging file reg_info.virtio
+set pagination off
+set logging on
+info registers all
+set logging off
