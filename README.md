@@ -9,18 +9,31 @@ a state state of long running applcations.
 1. QEMU
 2. Docker
 3. Python3
-4. A disk image
-5. (Optional) ARM Powered Apple Mac system. Needed this only to accelerate emulation.
+   - Jinja2 python module
+5. A disk image
+6. (Optional) ARM Powered Apple Mac system. Needed this only to accelerate emulation.
 
 ### Setup:
-Obtain a disk image of 64-bit ARM linux distribution and place it imgs directory.
+1. Install docker, git, qemu-system packages on your host machine
+   ```
+   sudo apt-get install git docker qemu-system
+   ```
+2. Run setup script which sets up directoris and builds a docker image
+   ```
+   bash setup.sh
+   ```
+3. Obtain a disk image of 64-bit ARM linux distribution and place it imgs directory.
+   Rename the image file to ubuntu-arm.img
+   ```
+   ln -s <path_to_your_image> imgs/ubunbu-arm.img
+   ```
 
 ### Steps to create a checkpoint:
 1. Launch QEMU emulation using the **run_ubuntu.sh** file
    ```
    bash run_ubuntu.sh
    ```
-3. After reaching a steady state invoke the following command to create a checkpoint
+2. After reaching a steady state invoke the following command to create a checkpoint
    ```
-   python create_snapshot.py --m1 --disk-image ../imgs/ubuntu-arm.img --dest-dir ../checkpoints/test
+   bash gen_snapshot.sh
    ```
