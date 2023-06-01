@@ -43,3 +43,24 @@ a state state of long running applcations.
    ```
    bash gen_snapshot.sh
    ```
+
+### Test Checkpoint:
+1. To test checkpoint gem5 needs to be built. Use the following command to build gem5.
+   
+   Start docker environment.
+   ```
+   bash run_gem5_docker.sh
+   ```   
+   Build gem5.
+   ```
+   cd gem5
+   scons -j8 build/ARM/gem5.opt
+   exit
+   ```
+ 
+ 2. Run checkpoint in the docker environment.
+    ```
+    bash run_gem5_docker.sh
+    bash run_gem5.sh
+    exit
+    ```
