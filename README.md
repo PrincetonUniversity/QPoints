@@ -32,6 +32,8 @@ a state state of long running applcations.
    ```
    After running above set of commands `imgs` folder contains `ubuntu-arm.img` disk image.
    
+   Ubuntu image login user is `bgodala` and password is `1234`.
+   
 ### Steps to create a checkpoint:
 1. Launch QEMU emulation using the `run_ubuntu_linux.sh` file
    ```
