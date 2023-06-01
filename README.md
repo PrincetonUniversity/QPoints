@@ -39,9 +39,13 @@ a state state of long running applcations.
    ```
    bash run_ubuntu.sh
    ```
-2. After reaching a steady state invoke the following command to create a checkpoint
+2. After reaching a steady state invoke the following command to create a checkpoint.
+   `gen_snapshot.sh` command works in the docker environment. Start the docker and then
+   invoke checkpoint generation command.
    ```
+   bash run_docker.sh
    bash gen_snapshot.sh
+   exit
    ```
 
 ### Test Checkpoint:
