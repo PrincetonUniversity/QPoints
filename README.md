@@ -23,14 +23,17 @@ a state state of long running applcations.
    ```
    bash setup.sh
    ```
-3. Obtain a disk image of 64-bit ARM linux distribution and place it imgs directory.
-   Rename the image file to ubuntu-arm.img
+3. Download a disk image from Google Drive. Download script works in docker
+   environment. Follow below steps do get the image.
    ```
-   ln -s <path_to_your_image> imgs/ubunbu-arm.img
+   bash run_docker.sh
+   bash imgs/download_image.sh
+   exit
    ```
-
+   After running above set of commands `imgs` folder contains `ubuntu-arm.img` disk image.
+   
 ### Steps to create a checkpoint:
-1. Launch QEMU emulation using the **run_ubuntu.sh** file
+1. Launch QEMU emulation using the `run_ubuntu_linux.sh` file
    ```
    bash run_ubuntu.sh
    ```
