@@ -1,0 +1,9 @@
+FROM gcr.io/gem5-test/ubuntu-20.04_all-dependencies:v22-1
+
+# Update package lists
+RUN apt-get update
+
+# Install more applications
+RUN apt-get install -y vim
+
+WORKDIR /qpoints
