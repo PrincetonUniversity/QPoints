@@ -11,6 +11,7 @@ RUN apt-get install -y python3-pip
 RUN apt-get install -y qemu
 RUN apt-get install -y qemu-system
 RUN pip3 install jinja2 
+RUN pip3 install gdown 
 RUN apt-get install -y vim
 
 # Set the entrypoint to start a shell

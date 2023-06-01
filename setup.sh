@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo Creating required directories
-mkdir checkpoints imgs
+mkdir checkpoints
 
 echo Please insert a softlin or copy disk image to imgs directory
 
