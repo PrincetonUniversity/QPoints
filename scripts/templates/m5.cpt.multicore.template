@@ -27,8 +27,8 @@ _deviceStatus=7
 _queueSelect=0
 
 [system.realview.vio.vio._queues.0]
-_address=0x22dbc8000
-_last_avail=8139
+_address={{ reg_map['vio_base'] }}
+_last_avail={{ reg_map['queue0_offset']  }}
 
 [system.realview.vio.vio.image]
 cowFilename=system.realview.vio.vio.image.cow

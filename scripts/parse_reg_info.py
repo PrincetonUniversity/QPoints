@@ -13,6 +13,9 @@ def parse_args(inp_args):
     parser.add_argument('--gdb-reg-info',type=str, required=True,
             help='Output dump file of info registers all command from gdb')
 
+    parser.add_argument('--dev-info',type=str, required=True,
+            help='Output dump file of info registers all command from gdb')
+
     parser.add_argument('--m5-miscreg-info',type=str, required=True,
             help='List of registers in gem5 in each line as appears in misreg header file')
 
@@ -50,6 +53,16 @@ def parse_reg_info(fname):
             reg_map[reg_name] = reg_val
 
     return reg_map
+
+def parse_dev_info(fname, reg_map):
+    dev_info = open(fname, 'r')
+
+    for line in dev_info:
+        print(line)
+        toks = line.split()
+
+        name = toks[0]
+        reg_map[name] = toks[1]
 
 def reverse_byte_order(hex_str):
     assert (len(hex_str) == 512)
@@ -190,6 +203,7 @@ def gen_m5cpt(cli_args):
     print(args.m5_template)
     if args.num_cpus == 1:
         reg_map = parse_reg_info(args.gdb_reg_info)
+        parse_dev_info(args.dev_info, reg_map)
         fix_sp_regs(reg_map)
 
         miscreg_str = get_miscreg_output(args.m5_miscreg_info, args.out_reg_info, reg_map)

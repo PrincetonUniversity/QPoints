@@ -60,6 +60,9 @@ def run_gdb_on_docker(args):
   if args.multi:
     script_file = 'gdb.script.multi'
 
+  if not args.m1:
+    script_file += '.linux'
+
   #cmd = '''docker run \
   #             --rm -v$(pwd)/gdb_scripts:/tools \
   #             -v$(pwd)/{}:/tools/ckpt_dir \
@@ -129,6 +132,13 @@ def run_gdb_process():
   return proc
 
 def copy_disk_image(dest_dir, disk_image):
+  #Make sure all pending write are writtenback to disc
+  proc = subprocess.Popen(
+          ['sync'],
+          stdout=subprocess.PIPE)
+  proc.wait()
+
+  #Now copy the image
   proc = subprocess.Popen(
           ['cp',disk_image,dest_dir],
           stdout=subprocess.PIPE)
@@ -217,12 +227,30 @@ def collect_snapshot(args):
   #move_file_dest_dir(dest_dir = args.dest_dir,
   #        fname = 'reg_info.virtio')
 
+def get_elf_skip_bytes(elf_name):
+  proc = subprocess.Popen(
+          ['readelf -l {} | grep LOAD'.format(elf_name)],
+          shell=True,
+          stdout=subprocess.PIPE,
+          text=True)
+  proc.wait()
+  out = proc.stdout.read()
+  toks = out.split()
+  return toks[1]
+
 def process_snapshot(args):
     reg_info_fname = "{}/reg_info.virtio".format(args.dest_dir)
+    dev_info_fname = "{}/dev.info".format(args.dest_dir)
+    
+    skip_bytes = get_elf_skip_bytes('{}/physmem.elf'.format(args.dest_dir))
+
     reg_info_args = []
 
     reg_info_args.append('--gdb-reg-info')
     reg_info_args.append(reg_info_fname)
+
+    reg_info_args.append('--dev-info')
+    reg_info_args.append(dev_info_fname)
 
     reg_info_args.append('--num-cpus')
     reg_info_args.append('1')
@@ -243,7 +271,7 @@ def process_snapshot(args):
 
     #--skip-bytes=0x470 --input-elf=/scratch/bgodala/qemu_workspace/qemu_local_kernel_build/finagle-http/physmem.elf --out-file=/scratch/bgodala/qemu_workspace/qemu_local_kernel_build/finagle-http/physmem
     #mem_conv_args = ['--skip-bytes=0x830', '--input-elf={}/physmem.elf'.format(args.dest_dir),
-    mem_conv_args = ['--skip-bytes=0x470', '--input-elf={}/physmem.elf'.format(args.dest_dir),
+    mem_conv_args = ['--skip-bytes={}'.format(skip_bytes), '--input-elf={}/physmem.elf'.format(args.dest_dir),
             '--out-file={}/physmem'.format(args.dest_dir)]
 
     gen_mem_file.gen_physmem(mem_conv_args)

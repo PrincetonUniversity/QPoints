@@ -1,1 +1,1 @@
-scripts/gen_snapshot.sh
+scripts/test/gen_snapshot.sh
