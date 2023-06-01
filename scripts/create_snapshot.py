@@ -60,13 +60,17 @@ def run_gdb_on_docker(args):
   if args.multi:
     script_file = 'gdb.script.multi'
 
-  cmd = '''docker run \
-               --rm -v$(pwd)/gdb_scripts:/tools \
-               -v$(pwd)/{}:/tools/ckpt_dir \
-               --privileged  --net host ubuntu-gdb \
-               sh -c "cd /tools/ckpt_dir; gdb-multiarch -x /tools/{}"
-         '''.format(args.dest_dir, script_file)
-  print(cmd)
+  #cmd = '''docker run \
+  #             --rm -v$(pwd)/gdb_scripts:/tools \
+  #             -v$(pwd)/{}:/tools/ckpt_dir \
+  #             --privileged  --net host ubuntu-gdb \
+  #             sh -c "cd /tools/ckpt_dir; gdb-multiarch -x /tools/{}"
+  #       '''.format(args.dest_dir, script_file)
+  #print(cmd)
+  
+  cwd = os.getcwd()
+  cmd = 'cd {}; gdb-multiarch -x /qpoints/scripts/gdb_scripts/{}; cd {}'.format(args.dest_dir, script_file, cwd)
+
 
   proc = subprocess.Popen(
           [cmd],
@@ -174,6 +178,11 @@ def dump_disk_dev_info(tn, dest_dir, fname):
 
 def collect_snapshot(args):
   host="localhost"
+  
+  # Hack for M1 Mac
+  if args.m1:
+    host="host.docker.internal"
+
   port="45454"
   tn = Telnet(host, port)
 
@@ -190,13 +199,14 @@ def collect_snapshot(args):
     copy_disk_image(dest_dir = args.dest_dir,
             disk_image = args.disk_image)
 
-  tn.write(bytes("dump-guest-memory {}/physmem.elf\n".format(os.path.abspath(args.dest_dir)), 'ascii'))
+  #tn.write(bytes("dump-guest-memory {}/physmem.elf\n".format(os.path.abspath(args.dest_dir)), 'ascii'))
+  tn.write(bytes("dump-guest-memory physmem.elf\n", 'ascii'))
   inp=tn.read_until(b"(qemu)")
 
   dump_disk_dev_info(tn, args.dest_dir, "dev.info")
 
   move_file_dest_dir(dest_dir = args.dest_dir,
-          fname = 'physmem.elf')
+          fname = '/qpoints/physmem.elf')
   #Start gdb server
   tn.write(b"gdbserver\n")
   inp=tn.read_until(b"(qemu)")
