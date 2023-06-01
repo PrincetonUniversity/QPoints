@@ -87,6 +87,18 @@ def run_gdb_on_docker(args):
   proc.stdin.flush()
   proc.wait()
 
+def copy_base_files(out_dir):
+  proc = subprocess.Popen(
+          ['cp -r base_files/* {}'.format(out_dir)],
+          stdout=subprocess.PIPE,
+          stdin=subprocess.PIPE,
+          stderr=subprocess.PIPE,
+          shell=True
+          )
+  proc.wait()
+  print(proc.stdout.read())
+  print(proc.stderr.read())
+
 
 
 def run_gdb_process_test():
@@ -176,7 +188,7 @@ def dump_disk_dev_info(tn, dest_dir, fname):
 
   OFFSET_MASK = ( 1 << 16) - 1
   print("offset",inp.decode('utf-8'))
-  offset_val = extract_addr(inp)
+  offset_val = extract_value(inp)
   print("offse_val", offset_val)
   offset = offset_val & OFFSET_MASK
 
@@ -272,9 +284,13 @@ def process_snapshot(args):
     #--skip-bytes=0x470 --input-elf=/scratch/bgodala/qemu_workspace/qemu_local_kernel_build/finagle-http/physmem.elf --out-file=/scratch/bgodala/qemu_workspace/qemu_local_kernel_build/finagle-http/physmem
     #mem_conv_args = ['--skip-bytes=0x830', '--input-elf={}/physmem.elf'.format(args.dest_dir),
     mem_conv_args = ['--skip-bytes={}'.format(skip_bytes), '--input-elf={}/physmem.elf'.format(args.dest_dir),
-            '--out-file={}/physmem'.format(args.dest_dir)]
+            '--out-file={}/system.physmem.store1.pmem'.format(args.dest_dir)]
 
     gen_mem_file.gen_physmem(mem_conv_args)
+
+    #Copy base files
+    copy_base_files(out_dir=args.dest_dir)
+
 
 
 
