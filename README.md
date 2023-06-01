@@ -10,6 +10,7 @@ a state state of long running applcations.
 2. Docker
 3. Python3
    - Jinja2 python module
+4. gdb-multiarch
 5. A disk image
 6. (Optional) ARM Powered Apple Mac system. Needed this only to accelerate emulation.
 
